@@ -8,21 +8,21 @@
 
 - [x] askar_set_custom_logger: (args_0: number, args_1: Buffer, args_2: number, args_3: number, args_4: number) => number;
 
-- [ ] askar_set_default_logger: () => number;
+- [x] askar_set_default_logger: () => number;
 
-- [ ] askar_set_max_log_level: (args_0: number) => number;
+- [x] askar_set_max_log_level: (args_0: number) => number;
 
-- [ ] askar_entry_list_count: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_entry_list_count: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_entry_list_free: (args_0: Buffer) => unknown;
+- [x] askar_entry_list_free: (args_0: Buffer) => unknown;
 
-- [ ] askar_entry_list_get_category: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_entry_list_get_category: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_entry_list_get_name: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_entry_list_get_name: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_entry_list_get_tags: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_entry_list_get_tags: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_entry_list_get_value: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_entry_list_get_value: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
 - [ ] askar_string_list_count: (args_0: Buffer, args_1: Buffer) => number;
 
