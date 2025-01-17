@@ -30,6 +30,37 @@ ErrorCode askarSessionStart(
   return intToErrorCode(result);
 }
 
+ErrorCode askarGetCurrentError(Pointer<Pointer<Utf8>> errorJsonPointer) {
+  final result = nativeAskarGetCurrentError(errorJsonPointer);
+  return intToErrorCode(result);
+}
+
+void askarBufferFree(Pointer<SecretBuffer> buffer) {
+  nativeAskarBufferFree(buffer);
+}
+
+void askarClearCustomLogger() {
+  nativeAskarClearCustomLogger();
+}
+
+ErrorCode askarSetCustomLogger(
+  Pointer<Void> context,
+  Pointer<NativeFunction<LogCallback>> log,
+  Pointer<OptionEnabledCallbackStruct> enabled,
+  Pointer<OptionFlushCallbackStruct> flush,
+  int maxLevel,
+) {
+  final result = nativeAskarSetCustomLogger(
+    context,
+    log,
+    enabled,
+    flush,
+    maxLevel,
+  );
+
+  return intToErrorCode(result);
+}
+
 ErrorCode askarStoreProvision(
   String specUri,
   String keyMethod,

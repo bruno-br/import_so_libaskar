@@ -1,12 +1,12 @@
 - [x] askar_version: () => string;
 
-- [ ] askar_get_current_error: (args_0: Buffer) => number;
+- [x] askar_get_current_error: (args_0: Buffer) => number;
 
-- [ ] askar_buffer_free: (args_0: Buffer) => unknown;
+- [x] askar_buffer_free: (args_0: Buffer) => unknown;
 
-- [ ] askar_clear_custom_logger: () => unknown;
+- [x] askar_clear_custom_logger: () => unknown;
 
-- [ ] askar_set_custom_logger: (args_0: number, args_1: Buffer, args_2: number, args_3: number, args_4: number) => number;
+- [x] askar_set_custom_logger: (args_0: number, args_1: Buffer, args_2: number, args_3: number, args_4: number) => number;
 
 - [ ] askar_set_default_logger: () => number;
 
