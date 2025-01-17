@@ -110,6 +110,106 @@ ErrorCode askarEntryListGetValue(
   return intToErrorCode(result);
 }
 
+ErrorCode askarStringListCount(StringListHandle handle, int count) {
+  final countPointer = calloc<Int32>();
+  countPointer.value = count;
+
+  final result = nativeAskarStringListCount(handle, countPointer);
+
+  final errorCode = intToErrorCode(result);
+  count = countPointer.value;
+
+  calloc.free(countPointer);
+
+  return errorCode;
+}
+
+void askarStringListFree(StringListHandle handle) {
+  nativeAskarStringListFree(handle);
+}
+
+ErrorCode askarStringListGetItem(
+    StringListHandle handle, int index, Pointer<Pointer<Utf8>> item) {
+  final result = nativeAskarStringListGetItem(handle, index, item);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyAeadDecrypt(
+  LocalKeyHandle handle,
+  ByteBuffer ciphertext,
+  ByteBuffer nonce,
+  ByteBuffer tag,
+  ByteBuffer aad,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyAeadDecrypt(
+    handle,
+    ciphertext,
+    nonce,
+    tag,
+    aad,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyAeadEncrypt(
+  LocalKeyHandle handle,
+  ByteBuffer message,
+  ByteBuffer nonce,
+  ByteBuffer aad,
+  Pointer<EncryptedBuffer> out,
+) {
+  final result = nativeAskarKeyAeadEncrypt(
+    handle,
+    message,
+    nonce,
+    aad,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyAeadGetPadding(
+  LocalKeyHandle handle,
+  int msgLen,
+  Pointer<Int32> out,
+) {
+  final result = nativeAskarKeyAeadGetPadding(
+    handle,
+    msgLen,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyAeadGetParams(
+  LocalKeyHandle handle,
+  Pointer<AeadParams> out,
+) {
+  final result = nativeAskarKeyAeadGetParams(
+    handle,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyAeadRandomNonce(
+  LocalKeyHandle handle,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyAeadRandomNonce(
+    handle,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
 ErrorCode askarStoreProvision(
   String specUri,
   String keyMethod,
