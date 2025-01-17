@@ -52,61 +52,61 @@
 
 - [x] askar_key_crypto_box_seal_open: (args_0: Buffer, args_1: Buffer, args_2: Buffer) => number;
 
-- [ ] askar_key_derive_ecdh_1pu: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: Buffer, args_7: Buffer, args_8: number, args_9: Buffer) => number;
+- [x] askar_key_derive_ecdh_1pu: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: Buffer, args_7: Buffer, args_8: number, args_9: Buffer) => number;
 
-- [ ] askar_key_derive_ecdh_es: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: number, args_7: Buffer) => number;
+- [x] askar_key_derive_ecdh_es: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer, args_6: number, args_7: Buffer) => number;
 
-- [ ] askar_key_entry_list_count: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_entry_list_count: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_entry_list_free: (args_0: Buffer) => unknown;
+- [x] askar_key_entry_list_free: (args_0: Buffer) => unknown;
 
-- [ ] askar_key_entry_list_get_algorithm: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_key_entry_list_get_algorithm: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_key_entry_list_get_metadata: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_key_entry_list_get_metadata: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_key_entry_list_get_name: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_key_entry_list_get_name: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_key_entry_list_get_tags: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_key_entry_list_get_tags: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_key_entry_list_load_local: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
+- [x] askar_key_entry_list_load_local: (args_0: Buffer, args_1: number, args_2: Buffer) => number;
 
-- [ ] askar_key_free: (args_0: Buffer) => unknown;
+- [x] askar_key_free: (args_0: Buffer) => unknown;
 
-- [ ] askar_key_from_jwk: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_from_jwk: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_from_key_exchange: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
+- [x] askar_key_from_key_exchange: (args_0: string, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
-- [ ] askar_key_from_public_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
+- [x] askar_key_from_public_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
 
-- [ ] askar_key_from_secret_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
+- [x] askar_key_from_secret_bytes: (args_0: string, args_1: Buffer, args_2: Buffer) => number;
 
-- [ ] askar_key_from_seed: (args_0: string, args_1: Buffer, args_2: string, args_3: Buffer) => number;
+- [x] askar_key_from_seed: (args_0: string, args_1: Buffer, args_2: string, args_3: Buffer) => number;
 
-- [ ] askar_key_generate: (args_0: string, args_1: string, args_2: number, args_3: Buffer) => number;
+- [x] askar_key_generate: (args_0: string, args_1: string, args_2: number, args_3: Buffer) => number;
 
-- [ ] askar_key_get_algorithm: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_get_algorithm: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_get_ephemeral: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_get_ephemeral: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_get_jwk_public: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
+- [x] askar_key_get_jwk_public: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
-- [ ] askar_key_get_jwk_secret: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_get_jwk_secret: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_get_jwk_thumbprint: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
+- [x] askar_key_get_jwk_thumbprint: (args_0: Buffer, args_1: string, args_2: Buffer) => number;
 
-- [ ] askar_key_get_public_bytes: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_get_public_bytes: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_get_secret_bytes: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_key_get_secret_bytes: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_key_sign_message: (args_0: Buffer, args_1: Buffer, args_2: string, args_3: Buffer) => number;
+- [x] askar_key_sign_message: (args_0: Buffer, args_1: Buffer, args_2: string, args_3: Buffer) => number;
 
-- [ ] askar_key_unwrap_key: (args_0: Buffer, args_1: string, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer) => number;
+- [x] askar_key_unwrap_key: (args_0: Buffer, args_1: string, args_2: Buffer, args_3: Buffer, args_4: Buffer, args_5: Buffer) => number;
 
-- [ ] askar_key_verify_signature: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: string, args_4: Buffer) => number;
+- [x] askar_key_verify_signature: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: string, args_4: Buffer) => number;
 
-- [ ] askar_key_wrap_key: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
+- [x] askar_key_wrap_key: (args_0: Buffer, args_1: Buffer, args_2: Buffer, args_3: Buffer) => number;
 
-- [ ] askar_key_get_supported_backends: (args_0: Buffer) => number;
+- [x] askar_key_get_supported_backends: (args_0: Buffer) => number;
 
 - [ ] askar_scan_free: (args_0: number) => number;
 

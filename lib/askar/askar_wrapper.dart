@@ -340,6 +340,332 @@ ErrorCode askarKeyDeriveEcdhEs(
   return intToErrorCode(result);
 }
 
+ErrorCode askarKeyEntryListCount(KeyEntryListHandle handle, int count) {
+  final countPointer = calloc<Int32>();
+  countPointer.value = count;
+
+  final result = nativeAskarKeyEntryListCount(handle, countPointer);
+
+  final errorCode = intToErrorCode(result);
+  count = countPointer.value;
+
+  calloc.free(countPointer);
+
+  return errorCode;
+}
+
+void askarKeyEntryListFree(KeyEntryListHandle handle) {
+  nativeAskarKeyEntryListFree(handle);
+}
+
+ErrorCode askarKeyEntryListGetAlgorithm(
+    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> alg) {
+  final result = nativeAskarKeyEntryListGetAlgorithm(handle, index, alg);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyEntryListGetMetadata(
+    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> metadata) {
+  final result = nativeAskarKeyEntryListGetMetadata(handle, index, metadata);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyEntryListGetName(
+    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> name) {
+  final result = nativeAskarKeyEntryListGetName(handle, index, name);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyEntryListGetTags(
+    KeyEntryListHandle handle, int index, Pointer<Pointer<Utf8>> tags) {
+  final result = nativeAskarKeyEntryListGetTags(handle, index, tags);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyEntryListLoadLocal(
+    KeyEntryListHandle handle, int index, Pointer<LocalKeyHandle> out) {
+  final result = nativeAskarKeyEntryListLoadLocal(handle, index, out);
+  return intToErrorCode(result);
+}
+
+void askarKeyFree(LocalKeyHandle handle) {
+  nativeAskarKeyFree(handle);
+}
+
+ErrorCode askarKeyFromJwk(Pointer<ByteBuffer> jwk, Pointer<LocalKeyHandle> out) {
+  final result = nativeAskarKeyFromJwk(jwk, out);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyFromKeyExchange(
+  String alg,
+  LocalKeyHandle skHandle,
+  LocalKeyHandle pkHandle,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyFromKeyExchange(
+    algPointer,
+    skHandle,
+    pkHandle,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyFromPublicBytes(
+  String alg,
+  Pointer<ByteBuffer> public_,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyFromPublicBytes(
+    algPointer,
+    public_,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyFromSecretBytes(
+  String alg,
+  Pointer<ByteBuffer> secret,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyFromSecretBytes(
+    algPointer,
+    secret,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyFromSeed(
+  String alg,
+  Pointer<ByteBuffer> seed,
+  String method,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+  final methodPointer = method.toNativeUtf8();
+
+  final result = nativeAskarKeyFromSeed(
+    algPointer,
+    seed,
+    methodPointer,
+    out,
+  );
+
+  calloc.free(algPointer);
+  calloc.free(methodPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGenerate(
+  String alg,
+  String keyBackend,
+  int ephemeral,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+  final keyBackendPointer = keyBackend.toNativeUtf8();
+
+  final result = nativeAskarKeyGenerate(
+    algPointer,
+    keyBackendPointer,
+    ephemeral,
+    out,
+  );
+
+  calloc.free(algPointer);
+  calloc.free(keyBackendPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetAlgorithm(LocalKeyHandle handle, Pointer<Pointer<Utf8>> out) {
+  final result = nativeAskarKeyGetAlgorithm(handle, out);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetEphemeral(LocalKeyHandle handle, Pointer<Int8> out) {
+  final result = nativeAskarKeyGetEphemeral(handle, out);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetJwkPublic(
+  LocalKeyHandle handle,
+  String alg,
+  Pointer<Pointer<Utf8>> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyGetJwkPublic(
+    handle,
+    algPointer,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetJwkSecret(
+  LocalKeyHandle handle,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyGetJwkSecret(
+    handle,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetJwkThumbprint(
+  LocalKeyHandle handle,
+  String alg,
+  Pointer<Pointer<Utf8>> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyGetJwkThumbprint(
+    handle,
+    algPointer,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetPublicBytes(
+  LocalKeyHandle handle,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyGetPublicBytes(
+    handle,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetSecretBytes(
+  LocalKeyHandle handle,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyGetSecretBytes(
+    handle,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeySignMessage(
+  LocalKeyHandle handle,
+  Pointer<ByteBuffer> message,
+  String sigType,
+  Pointer<SecretBuffer> out,
+) {
+  final sigTypePointer = sigType.toNativeUtf8();
+
+  final result = nativeAskarKeySignMessage(
+    handle,
+    message,
+    sigTypePointer,
+    out,
+  );
+
+  calloc.free(sigTypePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyUnwrapKey(
+  LocalKeyHandle handle,
+  String alg,
+  Pointer<ByteBuffer> ciphertext,
+  Pointer<ByteBuffer> nonce,
+  Pointer<ByteBuffer> tag,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyUnwrapKey(
+    handle,
+    algPointer,
+    ciphertext,
+    nonce,
+    tag,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyVerifySignature(
+  LocalKeyHandle handle,
+  Pointer<ByteBuffer> message,
+  Pointer<ByteBuffer> signature,
+  String sigType,
+  Pointer<Int8> out,
+) {
+  final sigTypePointer = sigType.toNativeUtf8();
+
+  final result = nativeAskarKeyVerifySignature(
+    handle,
+    message,
+    signature,
+    sigTypePointer,
+    out,
+  );
+
+  calloc.free(sigTypePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyWrapKey(
+  LocalKeyHandle handle,
+  LocalKeyHandle other,
+  Pointer<ByteBuffer> nonce,
+  Pointer<EncryptedBuffer> out,
+) {
+  final result = nativeAskarKeyWrapKey(
+    handle,
+    other,
+    nonce,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyGetSupportedBackends(Pointer<StringListHandle> out) {
+  final result = nativeAskarKeyGetSupportedBackends(out);
+  return intToErrorCode(result);
+}
+
 ErrorCode askarSessionStart(
   int handle,
   String profile,
