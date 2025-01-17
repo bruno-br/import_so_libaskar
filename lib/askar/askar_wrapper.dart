@@ -8,28 +8,6 @@ String askarVersion() {
   return resultPointer.toDartString();
 }
 
-ErrorCode askarSessionStart(
-  int handle,
-  String profile,
-  int asTransaction,
-  Pointer<NativeFunction<Void Function(CallbackId, Int32, SessionHandle)>> cb,
-  int cbId,
-) {
-  final profilePointer = profile.toNativeUtf8();
-
-  final result = nativeAskarSessionStart(
-    handle,
-    profilePointer,
-    asTransaction,
-    cb,
-    cbId,
-  );
-
-  calloc.free(profilePointer);
-
-  return intToErrorCode(result);
-}
-
 ErrorCode askarGetCurrentError(Pointer<Pointer<Utf8>> errorJsonPointer) {
   final result = nativeAskarGetCurrentError(errorJsonPointer);
   return intToErrorCode(result);
@@ -136,10 +114,10 @@ ErrorCode askarStringListGetItem(
 
 ErrorCode askarKeyAeadDecrypt(
   LocalKeyHandle handle,
-  ByteBuffer ciphertext,
-  ByteBuffer nonce,
-  ByteBuffer tag,
-  ByteBuffer aad,
+  Pointer<ByteBuffer> ciphertext,
+  Pointer<ByteBuffer> nonce,
+  Pointer<ByteBuffer> tag,
+  Pointer<ByteBuffer> aad,
   Pointer<SecretBuffer> out,
 ) {
   final result = nativeAskarKeyAeadDecrypt(
@@ -156,9 +134,9 @@ ErrorCode askarKeyAeadDecrypt(
 
 ErrorCode askarKeyAeadEncrypt(
   LocalKeyHandle handle,
-  ByteBuffer message,
-  ByteBuffer nonce,
-  ByteBuffer aad,
+  Pointer<ByteBuffer> message,
+  Pointer<ByteBuffer> nonce,
+  Pointer<ByteBuffer> aad,
   Pointer<EncryptedBuffer> out,
 ) {
   final result = nativeAskarKeyAeadEncrypt(
@@ -206,6 +184,180 @@ ErrorCode askarKeyAeadRandomNonce(
     handle,
     out,
   );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyConvert(
+  LocalKeyHandle handle,
+  String alg,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyConvert(
+    handle,
+    algPointer,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyCryptoBox(
+  LocalKeyHandle recipKey,
+  LocalKeyHandle senderKey,
+  Pointer<ByteBuffer> message,
+  Pointer<ByteBuffer> nonce,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyCryptoBox(
+    recipKey,
+    senderKey,
+    message,
+    nonce,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyCryptoBoxOpen(
+  LocalKeyHandle recipKey,
+  LocalKeyHandle senderKey,
+  Pointer<ByteBuffer> message,
+  Pointer<ByteBuffer> nonce,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyCryptoBoxOpen(
+    recipKey,
+    senderKey,
+    message,
+    nonce,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyCryptoBoxRandomNonce(
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyCryptoBoxRandomNonce(
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyCryptoBoxSeal(
+  LocalKeyHandle handle,
+  Pointer<ByteBuffer> message,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyCryptoBoxSeal(
+    handle,
+    message,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyCryptoBoxSealOpen(
+  LocalKeyHandle handle,
+  Pointer<ByteBuffer> ciphertext,
+  Pointer<SecretBuffer> out,
+) {
+  final result = nativeAskarKeyCryptoBoxSealOpen(
+    handle,
+    ciphertext,
+    out,
+  );
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyDeriveEcdh1pu(
+  String alg,
+  LocalKeyHandle ephemKey,
+  LocalKeyHandle senderKey,
+  LocalKeyHandle recipKey,
+  Pointer<ByteBuffer> algId,
+  Pointer<ByteBuffer> apu,
+  Pointer<ByteBuffer> apv,
+  Pointer<ByteBuffer> ccTag,
+  int receive,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyDeriveEcdh1pu(
+    algPointer,
+    ephemKey,
+    senderKey,
+    recipKey,
+    algId,
+    apu,
+    apv,
+    ccTag,
+    receive,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarKeyDeriveEcdhEs(
+  String alg,
+  LocalKeyHandle ephemKey,
+  LocalKeyHandle recipKey,
+  Pointer<ByteBuffer> algId,
+  Pointer<ByteBuffer> apu,
+  Pointer<ByteBuffer> apv,
+  int receive,
+  Pointer<LocalKeyHandle> out,
+) {
+  final algPointer = alg.toNativeUtf8();
+
+  final result = nativeAskarKeyDeriveEcdhEs(
+    algPointer,
+    ephemKey,
+    recipKey,
+    algId,
+    apu,
+    apv,
+    receive,
+    out,
+  );
+
+  calloc.free(algPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionStart(
+  int handle,
+  String profile,
+  int asTransaction,
+  Pointer<NativeFunction<Void Function(CallbackId, Int32, SessionHandle)>> cb,
+  int cbId,
+) {
+  final profilePointer = profile.toNativeUtf8();
+
+  final result = nativeAskarSessionStart(
+    handle,
+    profilePointer,
+    asTransaction,
+    cb,
+    cbId,
+  );
+
+  calloc.free(profilePointer);
 
   return intToErrorCode(result);
 }
