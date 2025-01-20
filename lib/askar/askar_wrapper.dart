@@ -1146,13 +1146,14 @@ ErrorCode askarStoreProvision(
   String passKey,
   String profile,
   int recreate,
-  Pointer<NativeFunction<Void Function(Int32, Int32, StoreHandle)>> cb,
-  int cbId,
 ) {
   final specUriPointer = specUri.toNativeUtf8();
   final keyMethodPointer = keyMethod.toNativeUtf8();
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
+
+  final cb = nativeLibCallbacks.lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>('cb_with_handle');
+  final cbId = 1;
 
   final result = nativeAskarStoreProvision(
     specUriPointer,

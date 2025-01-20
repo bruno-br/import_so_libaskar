@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 
+void test() {
+  print("start test");
+
+  // Parâmetros para provisionar o store
+  final String specUri = 'sqlite://storage.db';
+  final String keyMethod = 'raw';
+  final String passKey = 'mySecretKey';
+  final String profile = 'rekey';
+  final int recreate = 1; // 1 para recriar, 0 para manter
+
+  final result = askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
+
+  print("result: $result");
+
+  print("end test");
+}
+
+// void main() {
+//   // await test();
+//   // print('Askar Version: ${askarVersion()}');
+//   print('Alo1');
+
+//   runApp(const MyApp());
+//   print('Alo2');
+// }
+
 void main() {
   print('Askar Version: ${askarVersion()}');
+
+  test();
 
   runApp(const MyApp());
 }

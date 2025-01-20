@@ -89,6 +89,19 @@ typedef StringListHandle = Pointer<ArcHandleFfiStringList>;
 final DynamicLibrary nativeLib =
     DynamicLibrary.open('android/app/src/main/libaries_askar/libaries_askar.so');
 
+final DynamicLibrary nativeLibCallbacks =
+    DynamicLibrary.open('android/app/src/main/libaries_askar/askar_callbacks.so');
+
+final void Function(int cb_id, int err, int handle) cbWithHandle = nativeLibCallbacks
+    .lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>('cb_with_handle')
+    .asFunction();
+
+typedef CbWithoutHandleNative = Void Function(CallbackId cb_id, Int32 err);
+
+final void Function(int cb_id, int err) cbWithoutHandle = nativeLibCallbacks
+    .lookup<NativeFunction<CbWithoutHandleNative>>('cb_without_handle')
+    .asFunction();
+
 final Pointer<Utf8> Function() nativeAskarVersion = nativeLib
     .lookup<NativeFunction<Pointer<Utf8> Function()>>('askar_version')
     .asFunction();
