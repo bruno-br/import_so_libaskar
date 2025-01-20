@@ -666,6 +666,270 @@ ErrorCode askarKeyGetSupportedBackends(Pointer<StringListHandle> out) {
   return intToErrorCode(result);
 }
 
+ErrorCode askarScanFree(int handle) {
+  final result = nativeAskarScanFree(handle);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarScanNext(
+  int handle,
+  Pointer<NativeFunction<AskarScanNextCallback>> cb,
+  int cbId,
+) {
+  final result = nativeAskarScanNext(handle, cb, cbId);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarScanStart(
+  int handle,
+  String profile,
+  String category,
+  String tagFilter,
+  int offset,
+  int limit,
+  Pointer<NativeFunction<AskarScanStartCallback>> cb,
+  int cbId,
+) {
+  final profilePointer = profile.toNativeUtf8();
+  final categoryPointer = category.toNativeUtf8();
+  final tagFilterPointer = tagFilter.toNativeUtf8();
+
+  final result = nativeAskarScanStart(
+    handle,
+    profilePointer,
+    categoryPointer,
+    tagFilterPointer,
+    offset,
+    limit,
+    cb,
+    cbId,
+  );
+
+  calloc.free(profilePointer);
+  calloc.free(categoryPointer);
+  calloc.free(tagFilterPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionClose(
+  int handle,
+  int commit,
+  Pointer<NativeFunction<AskarSessionCloseCallback>> cb,
+  int cbId,
+) {
+  final result = nativeAskarSessionClose(handle, commit, cb, cbId);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionCount(
+  int handle,
+  String category,
+  String tagFilter,
+  Pointer<NativeFunction<AskarSessionCountCallback>> cb,
+  int cbId,
+) {
+  final categoryPointer = category.toNativeUtf8();
+  final tagFilterPointer = tagFilter.toNativeUtf8();
+
+  final result = nativeAskarSessionCount(
+    handle,
+    categoryPointer,
+    tagFilterPointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(categoryPointer);
+  calloc.free(tagFilterPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionFetch(
+  int handle,
+  String category,
+  String name,
+  int forUpdate,
+  Pointer<NativeFunction<AskarSessionFetchCallback>> cb,
+  int cbId,
+) {
+  final categoryPointer = category.toNativeUtf8();
+  final namePointer = name.toNativeUtf8();
+
+  final result = nativeAskarSessionFetch(
+    handle,
+    categoryPointer,
+    namePointer,
+    forUpdate,
+    cb,
+    cbId,
+  );
+
+  calloc.free(categoryPointer);
+  calloc.free(namePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionFetchAll(
+  int handle,
+  String category,
+  String tagFilter,
+  int limit,
+  int forUpdate,
+  Pointer<NativeFunction<AskarSessionFetchAllCallback>> cb,
+  int cbId,
+) {
+  final categoryPointer = category.toNativeUtf8();
+  final tagFilterPointer = tagFilter.toNativeUtf8();
+
+  final result = nativeAskarSessionFetchAll(
+    handle,
+    categoryPointer,
+    tagFilterPointer,
+    limit,
+    forUpdate,
+    cb,
+    cbId,
+  );
+
+  calloc.free(categoryPointer);
+  calloc.free(tagFilterPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionFetchAllKeys(
+  int handle,
+  String alg,
+  String thumbprint,
+  String tagFilter,
+  int limit,
+  int forUpdate,
+  Pointer<NativeFunction<AskarSessionFetchAllKeysCallback>> cb,
+  int cbId,
+) {
+  final algPointer = alg.toNativeUtf8();
+  final thumbprintPointer = thumbprint.toNativeUtf8();
+  final tagFilterPointer = tagFilter.toNativeUtf8();
+
+  final result = nativeAskarSessionFetchAllKeys(
+    handle,
+    algPointer,
+    thumbprintPointer,
+    tagFilterPointer,
+    limit,
+    forUpdate,
+    cb,
+    cbId,
+  );
+
+  calloc.free(algPointer);
+  calloc.free(thumbprintPointer);
+  calloc.free(tagFilterPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionFetchKey(
+  int handle,
+  String name,
+  int forUpdate,
+  Pointer<NativeFunction<AskarSessionFetchKeyCallback>> cb,
+  int cbId,
+) {
+  final namePointer = name.toNativeUtf8();
+
+  final result = nativeAskarSessionFetchKey(
+    handle,
+    namePointer,
+    forUpdate,
+    cb,
+    cbId,
+  );
+
+  calloc.free(namePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionInsertKey(
+  int handle,
+  LocalKeyHandle keyHandle,
+  String name,
+  String metadata,
+  String tags,
+  int expiryMs,
+  Pointer<NativeFunction<AskarSessionInsertKeyCallback>> cb,
+  int cbId,
+) {
+  final namePointer = name.toNativeUtf8();
+  final metadataPointer = metadata.toNativeUtf8();
+  final tagsPointer = tags.toNativeUtf8();
+
+  final result = nativeAskarSessionInsertKey(
+    handle,
+    keyHandle,
+    namePointer,
+    metadataPointer,
+    tagsPointer,
+    expiryMs,
+    cb,
+    cbId,
+  );
+
+  calloc.free(namePointer);
+  calloc.free(metadataPointer);
+  calloc.free(tagsPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionRemoveAll(
+  int handle,
+  String category,
+  String tagFilter,
+  Pointer<NativeFunction<AskarSessionRemoveAllCallback>> cb,
+  int cbId,
+) {
+  final categoryPointer = category.toNativeUtf8();
+  final tagFilterPointer = tagFilter.toNativeUtf8();
+
+  final result = nativeAskarSessionRemoveAll(
+    handle,
+    categoryPointer,
+    tagFilterPointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(categoryPointer);
+  calloc.free(tagFilterPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionRemoveKey(
+  int handle,
+  String name,
+  Pointer<NativeFunction<AskarSessionRemoveKeyCallback>> cb,
+  int cbId,
+) {
+  final namePointer = name.toNativeUtf8();
+
+  final result = nativeAskarSessionRemoveKey(
+    handle,
+    namePointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(namePointer);
+
+  return intToErrorCode(result);
+}
+
 ErrorCode askarSessionStart(
   int handle,
   String profile,
@@ -683,6 +947,194 @@ ErrorCode askarSessionStart(
     cbId,
   );
 
+  calloc.free(profilePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionUpdate(
+  int handle,
+  int operation,
+  String category,
+  String name,
+  Pointer<ByteBuffer> value,
+  String tags,
+  int expiryMs,
+  Pointer<NativeFunction<AskarSessionUpdateCallback>> cb,
+  int cbId,
+) {
+  final categoryPointer = category.toNativeUtf8();
+  final namePointer = name.toNativeUtf8();
+  final tagsPointer = tags.toNativeUtf8();
+
+  final result = nativeAskarSessionUpdate(
+    handle,
+    operation,
+    categoryPointer,
+    namePointer,
+    value,
+    tagsPointer,
+    expiryMs,
+    cb,
+    cbId,
+  );
+
+  calloc.free(categoryPointer);
+  calloc.free(namePointer);
+  calloc.free(tagsPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarSessionUpdateKey(
+  int handle,
+  String name,
+  String metadata,
+  String tags,
+  int expiryMs,
+  Pointer<NativeFunction<AskarSessionUpdateKeyCallback>> cb,
+  int cbId,
+) {
+  final namePointer = name.toNativeUtf8();
+  final metadataPointer = metadata.toNativeUtf8();
+  final tagsPointer = tags.toNativeUtf8();
+
+  final result = nativeAskarSessionUpdateKey(
+    handle,
+    namePointer,
+    metadataPointer,
+    tagsPointer,
+    expiryMs,
+    cb,
+    cbId,
+  );
+
+  calloc.free(namePointer);
+  calloc.free(metadataPointer);
+  calloc.free(tagsPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreClose(
+  int handle,
+  Pointer<NativeFunction<AskarStoreCloseCallback>> cb,
+  int cbId,
+) {
+  final result = nativeAskarStoreClose(handle, cb, cbId);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreCopy(
+  int handle,
+  String targetUri,
+  String keyMethod,
+  String passKey,
+  int recreate,
+  Pointer<NativeFunction<AskarStoreCopyCallback>> cb,
+  int cbId,
+) {
+  final targetUriPointer = targetUri.toNativeUtf8();
+  final keyMethodPointer = keyMethod.toNativeUtf8();
+  final passKeyPointer = passKey.toNativeUtf8();
+
+  final result = nativeAskarStoreCopy(
+    handle,
+    targetUriPointer,
+    keyMethodPointer,
+    passKeyPointer,
+    recreate,
+    cb,
+    cbId,
+  );
+
+  calloc.free(targetUriPointer);
+  calloc.free(keyMethodPointer);
+  calloc.free(passKeyPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreCreateProfile(
+  int handle,
+  String profile,
+  Pointer<NativeFunction<AskarStoreCreateProfileCallback>> cb,
+  int cbId,
+) {
+  final profilePointer = profile.toNativeUtf8();
+
+  final result = nativeAskarStoreCreateProfile(
+    handle,
+    profilePointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(profilePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreGenerateRawKey(
+  Pointer<ByteBuffer> seed,
+  Pointer<Pointer<Utf8>> out,
+) {
+  final result = nativeAskarStoreGenerateRawKey(seed, out);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreGetDefaultProfile(
+  int handle,
+  Pointer<NativeFunction<AskarStoreGetDefaultProfileCallback>> cb,
+  int cbId,
+) {
+  final result = nativeAskarStoreGetDefaultProfile(handle, cb, cbId);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreGetProfileName(
+  int handle,
+  Pointer<NativeFunction<AskarStoreGetProfileNameCallback>> cb,
+  int cbId,
+) {
+  final result = nativeAskarStoreGetProfileName(handle, cb, cbId);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreListProfiles(
+  int handle,
+  Pointer<NativeFunction<AskarStoreListProfilesCallback>> cb,
+  int cbId,
+) {
+  final result = nativeAskarStoreListProfiles(handle, cb, cbId);
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreOpen(
+  String specUri,
+  String keyMethod,
+  String passKey,
+  String profile,
+  Pointer<NativeFunction<AskarStoreOpenCallback>> cb,
+  int cbId,
+) {
+  final specUriPointer = specUri.toNativeUtf8();
+  final keyMethodPointer = keyMethod.toNativeUtf8();
+  final passKeyPointer = passKey.toNativeUtf8();
+  final profilePointer = profile.toNativeUtf8();
+
+  final result = nativeAskarStoreOpen(
+    specUriPointer,
+    keyMethodPointer,
+    passKeyPointer,
+    profilePointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(specUriPointer);
+  calloc.free(keyMethodPointer);
+  calloc.free(passKeyPointer);
   calloc.free(profilePointer);
 
   return intToErrorCode(result);
@@ -716,6 +1168,118 @@ ErrorCode askarStoreProvision(
   calloc.free(keyMethodPointer);
   calloc.free(passKeyPointer);
   calloc.free(profilePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreRekey(
+  int handle,
+  String keyMethod,
+  String passKey,
+  Pointer<NativeFunction<AskarStoreRekeyCallback>> cb,
+  int cbId,
+) {
+  final keyMethodPointer = keyMethod.toNativeUtf8();
+  final passKeyPointer = passKey.toNativeUtf8();
+
+  final result = nativeAskarStoreRekey(
+    handle,
+    keyMethodPointer,
+    passKeyPointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(keyMethodPointer);
+  calloc.free(passKeyPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreRemove(
+  String specUri,
+  Pointer<NativeFunction<AskarStoreRemoveCallback>> cb,
+  int cbId,
+) {
+  final specUriPointer = specUri.toNativeUtf8();
+
+  final result = nativeAskarStoreRemove(
+    specUriPointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(specUriPointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreRemoveProfile(
+  int handle,
+  String profile,
+  Pointer<NativeFunction<AskarStoreRemoveProfileCallback>> cb,
+  int cbId,
+) {
+  final profilePointer = profile.toNativeUtf8();
+
+  final result = nativeAskarStoreRemoveProfile(
+    handle,
+    profilePointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(profilePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarStoreSetDefaultProfile(
+  int handle,
+  String profile,
+  Pointer<NativeFunction<AskarStoreSetDefaultProfileCallback>> cb,
+  int cbId,
+) {
+  final profilePointer = profile.toNativeUtf8();
+
+  final result = nativeAskarStoreSetDefaultProfile(
+    handle,
+    profilePointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(profilePointer);
+
+  return intToErrorCode(result);
+}
+
+ErrorCode askarMigrateIndySdk(
+  String specUri,
+  String walletName,
+  String walletKey,
+  String kdfLevel,
+  Pointer<NativeFunction<AskarMigrateIndySdkCallback>> cb,
+  int cbId,
+) {
+  final specUriPointer = specUri.toNativeUtf8();
+  final walletNamePointer = walletName.toNativeUtf8();
+  final walletKeyPointer = walletKey.toNativeUtf8();
+  final kdfLevelPointer = kdfLevel.toNativeUtf8();
+
+  final result = nativeAskarMigrateIndySdk(
+    specUriPointer,
+    walletNamePointer,
+    walletKeyPointer,
+    kdfLevelPointer,
+    cb,
+    cbId,
+  );
+
+  calloc.free(specUriPointer);
+  calloc.free(walletNamePointer);
+  calloc.free(walletKeyPointer);
+  calloc.free(kdfLevelPointer);
 
   return intToErrorCode(result);
 }

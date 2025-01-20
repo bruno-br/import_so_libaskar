@@ -108,60 +108,60 @@
 
 - [x] askar_key_get_supported_backends: (args_0: Buffer) => number;
 
-- [ ] askar_scan_free: (args_0: number) => number;
+- [x] askar_scan_free: (args_0: number) => number;
 
-- [ ] askar_scan_next: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_scan_next: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_scan_start: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: number, args_6: Buffer, args_7: number) => number;
+- [x] askar_scan_start: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: number, args_6: Buffer, args_7: number) => number;
 
-- [ ] askar_session_close: (args_0: number, args_1: number, args_2: Buffer, args_3: number) => number;
+- [x] askar_session_close: (args_0: number, args_1: number, args_2: Buffer, args_3: number) => number;
 
-- [ ] askar_session_count: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
+- [x] askar_session_count: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
 
-- [ ] askar_session_fetch: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: Buffer, args_5: number) => number;
+- [x] askar_session_fetch: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: Buffer, args_5: number) => number;
 
-- [ ] askar_session_fetch_all: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: number, args_5: Buffer, args_6: number) => number;
+- [x] askar_session_fetch_all: (args_0: number, args_1: string, args_2: string, args_3: number, args_4: number, args_5: Buffer, args_6: number) => number;
 
-- [ ] askar_session_fetch_all_keys: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: number, args_6: Buffer, args_7: number) => number;
+- [x] askar_session_fetch_all_keys: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: number, args_6: Buffer, args_7: number) => number;
 
-- [ ] askar_session_fetch_key: (args_0: number, args_1: string, args_2: number, args_3: Buffer, args_4: number) => number;
+- [x] askar_session_fetch_key: (args_0: number, args_1: string, args_2: number, args_3: Buffer, args_4: number) => number;
 
-- [ ] askar_session_insert_key: (args_0: number, args_1: Buffer, args_2: string, args_3: string, args_4: string, args_5: number, args_6: Buffer, args_7: number) => number;
+- [x] askar_session_insert_key: (args_0: number, args_1: Buffer, args_2: string, args_3: string, args_4: string, args_5: number, args_6: Buffer, args_7: number) => number;
 
-- [ ] askar_session_remove_all: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
+- [x] askar_session_remove_all: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
 
-- [ ] askar_session_remove_key: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
+- [x] askar_session_remove_key: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
 - [x] askar_session_start: (args_0: number, args_1: string, args_2: number, args_3: Buffer, args_4: number) => number;
 
-- [ ] askar_session_update: (args_0: number, args_1: number, args_2: string, args_3: string, args_4: Buffer, args_5: string, args_6: number, args_7: Buffer, args_8: number) => number;
+- [x] askar_session_update: (args_0: number, args_1: number, args_2: string, args_3: string, args_4: Buffer, args_5: string, args_6: number, args_7: Buffer, args_8: number) => number;
 
-- [ ] askar_session_update_key: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
+- [x] askar_session_update_key: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
 
-- [ ] askar_store_close: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_close: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_copy: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
+- [x] askar_store_copy: (args_0: number, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
 
-- [ ] askar_store_create_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
+- [x] askar_store_create_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
-- [ ] askar_store_generate_raw_key: (args_0: Buffer, args_1: Buffer) => number;
+- [x] askar_store_generate_raw_key: (args_0: Buffer, args_1: Buffer) => number;
 
-- [ ] askar_store_get_profile_name: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_get_profile_name: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_get_default_profile: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_get_default_profile: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_list_profiles: (args_0: number, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_list_profiles: (args_0: number, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_open: (args_0: string, args_1: string, args_2: string, args_3: string, args_4: Buffer, args_5: number) => number;
+- [x] askar_store_open: (args_0: string, args_1: string, args_2: string, args_3: string, args_4: Buffer, args_5: number) => number;
 
 - [x] askar_store_provision: (args_0: string, args_1: string, args_2: string, args_3: string, args_4: number, args_5: Buffer, args_6: number) => number;
 
-- [ ] askar_store_rekey: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
+- [x] askar_store_rekey: (args_0: number, args_1: string, args_2: string, args_3: Buffer, args_4: number) => number;
 
-- [ ] askar_store_remove: (args_0: string, args_1: Buffer, args_2: number) => number;
+- [x] askar_store_remove: (args_0: string, args_1: Buffer, args_2: number) => number;
 
-- [ ] askar_store_remove_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
+- [x] askar_store_remove_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
-- [ ] askar_store_set_default_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
+- [x] askar_store_set_default_profile: (args_0: number, args_1: string, args_2: Buffer, args_3: number) => number;
 
-- [ ] askar_migrate_indy_sdk: (args_0: string, args_1: string, args_2: string, args_3: string, args_4: Buffer, args_5: number) => number;
+- [x] askar_migrate_indy_sdk: (args_0: string, args_1: string, args_2: string, args_3: string, args_4: Buffer, args_5: number) => number;
