@@ -1016,11 +1016,11 @@ ErrorCode askarSessionUpdateKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarStoreClose(
-  int handle,
-  Pointer<NativeFunction<AskarStoreCloseCallback>> cb,
-  int cbId,
-) {
+ErrorCode askarStoreClose(int handle) {
+  final cb = nativeLibCallbacks
+      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
+  final cbId = -1;
+
   final result = nativeAskarStoreClose(handle, cb, cbId);
   return intToErrorCode(result);
 }
@@ -1115,13 +1115,15 @@ ErrorCode askarStoreOpen(
   String keyMethod,
   String passKey,
   String profile,
-  Pointer<NativeFunction<AskarStoreOpenCallback>> cb,
-  int cbId,
 ) {
   final specUriPointer = specUri.toNativeUtf8();
   final keyMethodPointer = keyMethod.toNativeUtf8();
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
+
+  final cb = nativeLibCallbacks
+      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>('cb_with_handle');
+  final cbId = -1;
 
   final result = nativeAskarStoreOpen(
     specUriPointer,
@@ -1152,8 +1154,9 @@ ErrorCode askarStoreProvision(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cb = nativeLibCallbacks.lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>('cb_with_handle');
-  final cbId = 1;
+  final cb = nativeLibCallbacks
+      .lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>('cb_with_handle');
+  final cbId = -1;
 
   final result = nativeAskarStoreProvision(
     specUriPointer,
