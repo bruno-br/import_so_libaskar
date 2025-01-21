@@ -854,19 +854,15 @@ ErrorCode askarSessionFetchKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionInsertKey(
-  int handle,
-  LocalKeyHandle keyHandle,
-  String name,
-  String metadata,
-  String tags,
-  int expiryMs,
-  Pointer<NativeFunction<AskarSessionInsertKeyCallback>> cb,
-  int cbId,
-) {
+ErrorCode askarSessionInsertKey(int handle, LocalKeyHandle keyHandle, String name,
+    String metadata, String tags, int expiryMs) {
   final namePointer = name.toNativeUtf8();
   final metadataPointer = metadata.toNativeUtf8();
   final tagsPointer = tags.toNativeUtf8();
+
+  final cb = nativeLibCallbacks
+      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
+  final cbId = -1;
 
   final result = nativeAskarSessionInsertKey(
     handle,
@@ -930,14 +926,12 @@ ErrorCode askarSessionRemoveKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionStart(
-  int handle,
-  String profile,
-  int asTransaction,
-  Pointer<NativeFunction<Void Function(CallbackId, Int32, SessionHandle)>> cb,
-  int cbId,
-) {
+ErrorCode askarSessionStart(int handle, String profile, int asTransaction) {
   final profilePointer = profile.toNativeUtf8();
+
+  final cb = nativeLibCallbacks
+      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>('cb_with_handle');
+  final cbId = -1;
 
   final result = nativeAskarSessionStart(
     handle,
@@ -957,22 +951,26 @@ ErrorCode askarSessionUpdate(
   int operation,
   String category,
   String name,
-  Pointer<ByteBuffer> value,
+  String value,
   String tags,
   int expiryMs,
-  Pointer<NativeFunction<AskarSessionUpdateCallback>> cb,
-  int cbId,
 ) {
   final categoryPointer = category.toNativeUtf8();
   final namePointer = name.toNativeUtf8();
   final tagsPointer = tags.toNativeUtf8();
+
+  final valueByteBuffer = stringToByteBuffer(value);
+
+  final cb = nativeLibCallbacks
+      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
+  final cbId = -1;
 
   final result = nativeAskarSessionUpdate(
     handle,
     operation,
     categoryPointer,
     namePointer,
-    value,
+    valueByteBuffer,
     tagsPointer,
     expiryMs,
     cb,
@@ -981,9 +979,26 @@ ErrorCode askarSessionUpdate(
 
   calloc.free(categoryPointer);
   calloc.free(namePointer);
+  calloc.free(valueByteBuffer.ref.data);
+  calloc.free(valueByteBuffer);
   calloc.free(tagsPointer);
 
   return intToErrorCode(result);
+}
+
+Pointer<ByteBuffer> stringToByteBuffer(String value) {
+  final units = value.codeUnits;
+  final Pointer<Uint8> dataPointer = calloc<Uint8>(units.length);
+
+  for (int i = 0; i < units.length; i++) {
+    dataPointer[i] = units[i];
+  }
+
+  final Pointer<ByteBuffer> byteBufferPointer = calloc<ByteBuffer>();
+  byteBufferPointer.ref.len = units.length;
+  byteBufferPointer.ref.data = dataPointer;
+
+  return byteBufferPointer;
 }
 
 ErrorCode askarSessionUpdateKey(

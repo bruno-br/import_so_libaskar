@@ -11,7 +11,7 @@ flutter test
 ## Atualiza Libs
 
 ```
-dart pub get
+flutter pub get
 ```
 
 ## Gerar `libcallback.so`:

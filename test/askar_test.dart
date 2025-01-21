@@ -1,4 +1,8 @@
+import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
+import 'package:import_so_libaskar/askar/askar_native_functions.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/main.dart';
@@ -19,6 +23,15 @@ void main() {
 
       // Abre a carteira
       expect(storeOpenTest(), equals(ErrorCode.Success));
+
+      // Inicia uma sessão
+      // expect(sessionStartTest(), equals(ErrorCode.Success));
+
+      // Insere key
+      // expect(sessionInsertKeyTest(), equals(ErrorCode.Input));
+
+      // Atualiza sessao
+      // expect(sessionUpdateTest(), equals(ErrorCode.Success));
 
       // Fecha a carteira
       expect(storeCloseTest(), equals(ErrorCode.Success));
@@ -49,6 +62,53 @@ ErrorCode storeOpenTest() {
   final result = askarStoreOpen(specUri, keyMethod, passKey, profile);
 
   print('Store Open Result: ${result}');
+
+  return result;
+}
+
+ErrorCode sessionStartTest() {
+  int handle = 1;
+  String profile = 'rekey';
+  int asTransaction = 1;
+
+  final result = askarSessionStart(handle, profile, asTransaction);
+
+  print('Session Start Result: ${result}');
+
+  return result;
+}
+
+ErrorCode sessionInsertKeyTest() {
+  int handle = 1;
+  Pointer<ArcHandleLocalKey> keyHandlePointer = calloc<ArcHandleLocalKey>();
+  String name = '';
+  String metadata = '';
+  String tags = '';
+  int expiryMs = 2000;
+
+  final result =
+      askarSessionInsertKey(handle, keyHandlePointer, name, metadata, tags, expiryMs);
+
+  print('Session Insert Key Result: ${result}');
+
+  calloc.free(keyHandlePointer);
+
+  return result;
+}
+
+ErrorCode sessionUpdateTest() {
+  int handle = 1;
+  int operation = 0;
+  String category = 'category-one';
+  String name = 'testEntry';
+  String value = 'foobar';
+  String tags = '';
+  int expiryMs = 2000;
+
+  final result =
+      askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
+
+  print('Session Update Result: ${result}');
 
   return result;
 }
