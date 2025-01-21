@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:import_so_libaskar/main.dart';
 
 void main() {
-  group('AskarError tests', () {
+  group('Askar Tests', () {
     test('Askar Version - Retorna versão do Askar', () {
       final result = askarVersion();
       expect(result, equals('0.3.2'));
     });
 
-    testWidgets('Askar Store Provision', (WidgetTester tester) async {
+    testWidgets('Askar Store', (WidgetTester tester) async {
       // Faz build do app.
       await tester.pumpWidget(const MyApp());
 
