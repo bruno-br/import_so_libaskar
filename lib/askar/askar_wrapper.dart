@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'package:ffi/ffi.dart';
@@ -857,32 +858,41 @@ ErrorCode askarSessionFetchKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionInsertKey(int handle, LocalKeyHandle keyHandle, String name,
-    String metadata, String tags, int expiryMs) {
+CallbackResult askarSessionInsertKey(int handle, LocalKeyHandle keyHandle, String name,
+    String metadata, Map<String, String> tags, int expiryMs) {
   final namePointer = name.toNativeUtf8();
   final metadataPointer = metadata.toNativeUtf8();
-  final tagsPointer = tags.toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
-  final cbId = -1;
+  final tagsJsonString = jsonEncode(tags);
+  final tagsJsonPointer = tagsJsonString.toNativeUtf8();
+
+  final cbId = getNextCallbackId();
 
   final result = nativeAskarSessionInsertKey(
     handle,
     keyHandle,
     namePointer,
     metadataPointer,
-    tagsPointer,
+    tagsJsonPointer,
     expiryMs,
-    cb,
+    nativeCbWithoutHandle,
     cbId,
   );
 
+  final initialErrorCode = intToErrorCode(result);
+
+  if (initialErrorCode != ErrorCode.Success) {
+    print('falhou de inicio');
+    return CallbackResult(initialErrorCode, -1, false);
+  }
+
+  sleep(Duration(seconds: 2));
+
   calloc.free(namePointer);
   calloc.free(metadataPointer);
-  calloc.free(tagsPointer);
+  calloc.free(tagsJsonPointer);
 
-  return intToErrorCode(result);
+  return getCallbackParams(cbId);
 }
 
 ErrorCode askarSessionRemoveAll(
@@ -949,7 +959,7 @@ ErrorCode askarSessionStart(int handle, String profile, int asTransaction) {
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionUpdate(
+CallbackResult askarSessionUpdate(
   int handle,
   int operation,
   String category,
@@ -964,9 +974,7 @@ ErrorCode askarSessionUpdate(
 
   final valueByteBuffer = stringToByteBuffer(value);
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
-  final cbId = -1;
+  final cbId = getNextCallbackId();
 
   final result = nativeAskarSessionUpdate(
     handle,
@@ -976,9 +984,18 @@ ErrorCode askarSessionUpdate(
     valueByteBuffer,
     tagsPointer,
     expiryMs,
-    cb,
+    nativeCbWithoutHandle,
     cbId,
   );
+
+  final initialErrorCode = intToErrorCode(result);
+
+  if (initialErrorCode != ErrorCode.Success) {
+    print('falhou de inicio');
+    return CallbackResult(initialErrorCode, -1, false);
+  }
+
+  sleep(Duration(seconds: 2));
 
   calloc.free(categoryPointer);
   calloc.free(namePointer);
@@ -986,7 +1003,7 @@ ErrorCode askarSessionUpdate(
   calloc.free(valueByteBuffer);
   calloc.free(tagsPointer);
 
-  return intToErrorCode(result);
+  return getCallbackParams(cbId);
 }
 
 Pointer<ByteBuffer> stringToByteBuffer(String value) {
@@ -1150,6 +1167,15 @@ CallbackResult askarStoreOpen(
     cbId,
   );
 
+  final initialErrorCode = intToErrorCode(result);
+
+  if (initialErrorCode != ErrorCode.Success) {
+    print('falhou de inicio');
+    return CallbackResult(initialErrorCode, -1, false);
+  }
+
+  sleep(Duration(seconds: 2));
+
   calloc.free(specUriPointer);
   calloc.free(keyMethodPointer);
   calloc.free(passKeyPointer);
@@ -1192,6 +1218,13 @@ CallbackResult askarStoreProvision(
     nativeCbWithHandle,
     cbId,
   );
+
+  final initialErrorCode = intToErrorCode(result);
+
+  if (initialErrorCode != ErrorCode.Success) {
+    print('falhou de inicio');
+    return CallbackResult(initialErrorCode, -1, false);
+  }
 
   sleep(Duration(seconds: 2));
 

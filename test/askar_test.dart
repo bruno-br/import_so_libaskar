@@ -22,19 +22,25 @@ void main() {
       // Cria uma carteira
       final storeProvisionResult = storeProvisionTest();
       expect(storeProvisionResult.errorCode, equals(ErrorCode.Success));
+      expect(storeProvisionResult.finished, true);
 
       // Abre a carteira
-      // final storeOpenResult = storeOpenTest();
-      // expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+      final storeOpenResult = storeOpenTest();
+      expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
+      expect(storeOpenResult.finished, true);
 
       // Inicia uma sessão
       // expect(sessionStartTest(), equals(ErrorCode.Success));
 
       // Insere key
-      // expect(sessionInsertKeyTest(), equals(ErrorCode.Input));
+      // final sessionInsertKeyResult = sessionInsertKeyTest(storeOpenResult.handle);
+      // expect(sessionInsertKeyResult.errorCode, equals(ErrorCode.Input));
+      // expect(sessionInsertKeyResult.finished, true);
 
       // Atualiza sessao
-      // expect(sessionUpdateTest(), equals(ErrorCode.Success));
+      final sessionUpdateResult = sessionUpdateTest(storeOpenResult.handle);
+      expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
+      expect(sessionUpdateResult.finished, true);
 
       // Fecha a carteira
       // expect(storeCloseTest(), equals(ErrorCode.Success));
@@ -44,27 +50,27 @@ void main() {
 
 CallbackResult storeProvisionTest() {
   final String specUri = 'sqlite://storage.db';
-  final String keyMethod = 'raw';
+  final String keyMethod = 'kdf:argon2i:mod';
   final String passKey = 'mySecretKey';
   final String profile = 'rekey';
   final int recreate = 1; // 1 para recriar, 0 para manter
 
   final result = askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
 
-  print('Store Provision Result: (${result.errorCode}, Handle: ${result.handle})');
+  print('Store Provision Result: (${result.errorCode}, Handle: ${result.handle})\n');
 
   return result;
 }
 
 CallbackResult storeOpenTest() {
   final String specUri = 'sqlite://storage.db';
-  final String keyMethod = 'raw';
+  final String keyMethod = 'kdf:argon2i:mod';
   final String passKey = 'mySecretKey';
   final String profile = 'rekey';
 
   final result = askarStoreOpen(specUri, keyMethod, passKey, profile);
 
-  print('Store Open Result: (${result.errorCode}, Handle: ${result.handle})');
+  print('Store Open Result: (${result.errorCode}, Handle: ${result.handle})\n');
 
   return result;
 }
@@ -76,31 +82,30 @@ ErrorCode sessionStartTest() {
 
   final result = askarSessionStart(handle, profile, asTransaction);
 
-  print('Session Start Result: ${result}');
+  print('Session Start Result: ${result}\n');
 
   return result;
 }
 
-ErrorCode sessionInsertKeyTest() {
-  int handle = 1;
+CallbackResult sessionInsertKeyTest(int handle) {
   Pointer<ArcHandleLocalKey> keyHandlePointer = calloc<ArcHandleLocalKey>();
-  String name = '';
-  String metadata = '';
-  String tags = '';
+  String name = 'testkey"';
+  String metadata = 'meta';
+  String reference = 'None';
+  Map<String, String> tags = {'a': 'b'};
   int expiryMs = 2000;
 
   final result =
       askarSessionInsertKey(handle, keyHandlePointer, name, metadata, tags, expiryMs);
 
-  print('Session Insert Key Result: ${result}');
+  print('Session Insert Key Result: (${result.errorCode}, Handle: ${result.handle})\n');
 
   calloc.free(keyHandlePointer);
 
   return result;
 }
 
-ErrorCode sessionUpdateTest() {
-  int handle = 1;
+CallbackResult sessionUpdateTest(int handle) {
   int operation = 0;
   String category = 'category-one';
   String name = 'testEntry';
@@ -111,7 +116,7 @@ ErrorCode sessionUpdateTest() {
   final result =
       askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
 
-  print('Session Update Result: ${result}');
+  print('Session Update Result: (${result.errorCode}, Handle: ${result.handle})\n');
 
   return result;
 }
@@ -121,7 +126,7 @@ ErrorCode storeCloseTest() {
 
   final result = askarStoreClose(handle);
 
-  print('Store Close Result: ${result}');
+  print('Store Close Result: ${result}\n');
 
   return result;
 }
