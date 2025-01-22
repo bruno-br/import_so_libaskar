@@ -1157,7 +1157,32 @@ ErrorCode askarStoreOpen(
   return intToErrorCode(result);
 }
 
-ErrorCode askarStoreProvision(
+base class CallbackParams extends Struct {
+  @Int64()
+  external int cb_id;
+
+  @Int32()
+  external int err;
+
+  @Int64()
+  external int handle;
+}
+
+typedef GetCallbackParamsNative = CallbackParams Function();
+typedef GetCallbackParamsDart = CallbackParams Function();
+
+final GetCallbackParamsDart getCallbackParams = nativeLibCallbacks
+    .lookup<NativeFunction<GetCallbackParamsNative>>('get_callback_params')
+    .asFunction();
+
+class ProvisionResult {
+  final ErrorCode errorCode;
+  final int handle;
+
+  ProvisionResult(this.errorCode, this.handle);
+}
+
+ProvisionResult askarStoreProvision(
   String specUri,
   String keyMethod,
   String passKey,
@@ -1188,7 +1213,14 @@ ErrorCode askarStoreProvision(
   calloc.free(passKeyPointer);
   calloc.free(profilePointer);
 
-  return intToErrorCode(result);
+  final callbackParams = getCallbackParams();
+  if (callbackParams.err != 0) {
+    print('Error: ${callbackParams.err}');
+  } else {
+    print('Callback ID: ${callbackParams.cb_id}, Store Handle: ${callbackParams.handle}');
+  }
+
+  return ProvisionResult(intToErrorCode(callbackParams.err), callbackParams.handle);
 }
 
 ErrorCode askarStoreRekey(

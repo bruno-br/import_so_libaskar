@@ -19,7 +19,8 @@ void main() {
       await tester.pumpWidget(const MyApp());
 
       // Cria uma carteira
-      expect(storeProvisionTest(), equals(ErrorCode.Success));
+      final provisionResult = storeProvisionTest();
+      expect(provisionResult.errorCode, equals(ErrorCode.Success));
 
       // Abre a carteira
       expect(storeOpenTest(), equals(ErrorCode.Success));
@@ -39,7 +40,7 @@ void main() {
   });
 }
 
-ErrorCode storeProvisionTest() {
+ProvisionResult storeProvisionTest() {
   final String specUri = 'sqlite://storage.db';
   final String keyMethod = 'raw';
   final String passKey = 'mySecretKey';
