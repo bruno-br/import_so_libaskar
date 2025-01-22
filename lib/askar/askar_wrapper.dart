@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 import 'package:ffi/ffi.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/callback_native_functions.dart';
@@ -1127,7 +1128,7 @@ ErrorCode askarStoreListProfiles(
   return intToErrorCode(result);
 }
 
-ErrorCode askarStoreOpen(
+CallbackResult askarStoreOpen(
   String specUri,
   String keyMethod,
   String passKey,
@@ -1138,16 +1139,14 @@ ErrorCode askarStoreOpen(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>('cb_with_handle');
-  final cbId = -1;
+  final cbId = getNextCallbackId();
 
   final result = nativeAskarStoreOpen(
     specUriPointer,
     keyMethodPointer,
     passKeyPointer,
     profilePointer,
-    cb,
+    nativeCbWithHandle,
     cbId,
   );
 
@@ -1156,7 +1155,7 @@ ErrorCode askarStoreOpen(
   calloc.free(passKeyPointer);
   calloc.free(profilePointer);
 
-  return intToErrorCode(result);
+  return getCallbackParams(cbId);
 }
 
 base class CallbackParams extends Struct {
@@ -1193,6 +1192,8 @@ CallbackResult askarStoreProvision(
     nativeCbWithHandle,
     cbId,
   );
+
+  sleep(Duration(seconds: 2));
 
   calloc.free(specUriPointer);
   calloc.free(keyMethodPointer);

@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'package:import_so_libaskar/askar/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/askar_native_functions.dart';
 
 base class CallbackParams extends Struct {
@@ -8,6 +7,9 @@ base class CallbackParams extends Struct {
 
   @Int64()
   external int handle;
+
+  @Bool()
+  external bool finished;
 }
 
 final DynamicLibrary nativeLibCallbacks =

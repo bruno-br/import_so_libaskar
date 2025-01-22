@@ -20,11 +20,12 @@ void main() {
       await tester.pumpWidget(const MyApp());
 
       // Cria uma carteira
-      final result = storeProvisionTest();
-      expect(result.errorCode, equals(ErrorCode.Success));
+      final storeProvisionResult = storeProvisionTest();
+      expect(storeProvisionResult.errorCode, equals(ErrorCode.Success));
 
       // Abre a carteira
-      // expect(storeOpenTest(), equals(ErrorCode.Success));
+      // final storeOpenResult = storeOpenTest();
+      // expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
 
       // Inicia uma sessão
       // expect(sessionStartTest(), equals(ErrorCode.Success));
@@ -50,13 +51,12 @@ CallbackResult storeProvisionTest() {
 
   final result = askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
 
-  print(
-      'Store Provision Result: (${result.errorCode}, Handle: ${result.handle})');
+  print('Store Provision Result: (${result.errorCode}, Handle: ${result.handle})');
 
   return result;
 }
 
-ErrorCode storeOpenTest() {
+CallbackResult storeOpenTest() {
   final String specUri = 'sqlite://storage.db';
   final String keyMethod = 'raw';
   final String passKey = 'mySecretKey';
@@ -64,7 +64,7 @@ ErrorCode storeOpenTest() {
 
   final result = askarStoreOpen(specUri, keyMethod, passKey, profile);
 
-  print('Store Open Result: ${result}');
+  print('Store Open Result: (${result.errorCode}, Handle: ${result.handle})');
 
   return result;
 }

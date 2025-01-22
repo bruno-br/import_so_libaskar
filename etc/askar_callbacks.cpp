@@ -9,6 +9,7 @@ typedef int64_t StoreHandle;
 struct CallbackParams {
     ErrorCode err;
     StoreHandle handle;
+    bool finished;
 };
 
 std::unordered_map<CallbackId, CallbackParams> g_callback_params_map;
@@ -23,11 +24,11 @@ extern "C" CallbackParams get_cb_params(CallbackId cb_id) {
 }
 
 extern "C" void cb_with_handle(CallbackId cb_id, ErrorCode err, StoreHandle handle) {
-    CallbackParams params = {err, handle};
+    CallbackParams params = {err, handle, true};
     g_callback_params_map[cb_id] = params;
 }
 
 extern "C" void cb_without_handle(CallbackId cb_id, ErrorCode err) {
-    CallbackParams params = {err, -1};
+    CallbackParams params = {err, -1, true};
     g_callback_params_map[cb_id] = params;
 }
