@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
+import 'package:import_so_libaskar/askar/callback_native_functions.dart';
+import 'package:import_so_libaskar/askar/callback_wrapper.dart';
 import 'askar_native_functions.dart';
 
 String askarVersion() {
@@ -1168,21 +1170,7 @@ base class CallbackParams extends Struct {
   external int handle;
 }
 
-typedef GetCallbackParamsNative = CallbackParams Function();
-typedef GetCallbackParamsDart = CallbackParams Function();
-
-final GetCallbackParamsDart getCallbackParams = nativeLibCallbacks
-    .lookup<NativeFunction<GetCallbackParamsNative>>('get_callback_params')
-    .asFunction();
-
-class ProvisionResult {
-  final ErrorCode errorCode;
-  final int handle;
-
-  ProvisionResult(this.errorCode, this.handle);
-}
-
-ProvisionResult askarStoreProvision(
+CallbackResult askarStoreProvision(
   String specUri,
   String keyMethod,
   String passKey,
@@ -1194,9 +1182,7 @@ ProvisionResult askarStoreProvision(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int32, Int32, StoreHandle)>>('cb_with_handle');
-  final cbId = -1;
+  final cbId = getNextCallbackId();
 
   final result = nativeAskarStoreProvision(
     specUriPointer,
@@ -1204,7 +1190,7 @@ ProvisionResult askarStoreProvision(
     passKeyPointer,
     profilePointer,
     recreate,
-    cb,
+    nativeCbWithHandle,
     cbId,
   );
 
@@ -1213,14 +1199,7 @@ ProvisionResult askarStoreProvision(
   calloc.free(passKeyPointer);
   calloc.free(profilePointer);
 
-  final callbackParams = getCallbackParams();
-  if (callbackParams.err != 0) {
-    print('Error: ${callbackParams.err}');
-  } else {
-    print('Callback ID: ${callbackParams.cb_id}, Store Handle: ${callbackParams.handle}');
-  }
-
-  return ProvisionResult(intToErrorCode(callbackParams.err), callbackParams.handle);
+  return getCallbackParams(cbId);
 }
 
 ErrorCode askarStoreRekey(

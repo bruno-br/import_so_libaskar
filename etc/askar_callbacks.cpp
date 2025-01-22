@@ -1,35 +1,33 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <unordered_map>
 
 typedef int32_t ErrorCode;
 typedef int64_t CallbackId;
 typedef int64_t StoreHandle;
 
 struct CallbackParams {
-    CallbackId cb_id;
     ErrorCode err;
     StoreHandle handle;
 };
 
-CallbackParams g_callback_params;
+std::unordered_map<CallbackId, CallbackParams> g_callback_params_map;
 
-extern "C" void cb_with_handle(CallbackId cb_id, ErrorCode err, StoreHandle handle) {
-    g_callback_params.cb_id = cb_id;
-    g_callback_params.err = err;
-    g_callback_params.handle = handle;
+extern "C" CallbackId next_cb_id() {
+    static CallbackId current_id = 0;
+    return ++current_id;
 }
 
-extern "C" CallbackParams get_callback_params() {
-    return g_callback_params;
+extern "C" CallbackParams get_cb_params(CallbackId cb_id) {
+    return g_callback_params_map[cb_id];
+}
+
+extern "C" void cb_with_handle(CallbackId cb_id, ErrorCode err, StoreHandle handle) {
+    CallbackParams params = {err, handle};
+    g_callback_params_map[cb_id] = params;
 }
 
 extern "C" void cb_without_handle(CallbackId cb_id, ErrorCode err) {
-    // Handle the callback logic here
-    if (err != 0) {
-        // Handle error
-        printf("Error: %d\n", err);
-    } else {
-        // Handle success
-        printf("Success\n");
-    }
+    CallbackParams params = {err, -1};
+    g_callback_params_map[cb_id] = params;
 }
