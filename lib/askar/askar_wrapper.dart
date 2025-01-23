@@ -958,19 +958,24 @@ Future<CallbackResult> askarSessionUpdate(
   String category,
   String name,
   String value,
-  String tags,
+  Map<String, String> tags,
   int expiryMs,
 ) {
+  String jsonString = jsonEncode(tags);
+
   final categoryPointer = category.toNativeUtf8();
   final namePointer = name.toNativeUtf8();
-  final tagsPointer = tags.toNativeUtf8();
-  final valueByteBuffer = stringToByteBuffer(value);
+  final tagsPointer = jsonString.toNativeUtf8();
+  final byteBufferPointer = stringToByteBuffer(value);
+
+  // Uso da variável byteBuffer
+  ByteBuffer byteBuffer = byteBufferPointer.ref;
 
   void cleanup() {
     calloc.free(categoryPointer);
     calloc.free(namePointer);
-    calloc.free(valueByteBuffer.ref.data);
-    calloc.free(valueByteBuffer);
+    calloc.free(byteBufferPointer.ref.data);
+    calloc.free(byteBufferPointer);
     calloc.free(tagsPointer);
   }
 
@@ -981,7 +986,7 @@ Future<CallbackResult> askarSessionUpdate(
     operation,
     categoryPointer,
     namePointer,
-    valueByteBuffer,
+    byteBuffer,
     tagsPointer,
     expiryMs,
     callback.nativeCallable.nativeFunction,
@@ -992,15 +997,22 @@ Future<CallbackResult> askarSessionUpdate(
 }
 
 Pointer<ByteBuffer> stringToByteBuffer(String value) {
-  final units = value.codeUnits;
-  final Pointer<Uint8> dataPointer = calloc<Uint8>(units.length);
+  // Converter a string para bytes
+  List<int> bytes = utf8.encode(value);
 
-  for (int i = 0; i < units.length; i++) {
-    dataPointer[i] = units[i];
+  // Alocar memória para os bytes na FFI
+  Pointer<Uint8> dataPointer = calloc<Uint8>(bytes.length);
+
+// Copiar os bytes para a memória alocada
+  for (int i = 0; i < bytes.length; i++) {
+    dataPointer[i] = bytes[i];
   }
 
-  final Pointer<ByteBuffer> byteBufferPointer = calloc<ByteBuffer>();
-  byteBufferPointer.ref.len = units.length;
+  // Alocar memória para o ByteBuffer
+  Pointer<ByteBuffer> byteBufferPointer = calloc<ByteBuffer>();
+
+  // Preencher os campos da estrutura
+  byteBufferPointer.ref.len = bytes.length;
   byteBufferPointer.ref.data = dataPointer;
 
   return byteBufferPointer;

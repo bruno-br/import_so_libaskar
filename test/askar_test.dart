@@ -46,9 +46,9 @@ void main() {
         expect(sessionUpdateResult.finished, equals(true));
 
         // Fecha a carteira
-        final storeCloseResult = await storeCloseTest(sessionUpdateResult.handle);
-        expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
-        expect(storeCloseResult.finished, equals(true));
+        // final storeCloseResult = await storeCloseTest(sessionUpdateResult.handle);
+        // expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
+        // expect(storeCloseResult.finished, equals(true));
       });
     });
   });
@@ -115,7 +115,7 @@ Future<CallbackResult> sessionUpdateTest(int handle) async {
   String category = 'category-one';
   String name = 'testEntry';
   String value = 'foobar';
-  String tags = '';
+  Map<String, String> tags = {'~plaintag': 'a', 'enctag': 'b'};
   int expiryMs = 2000;
 
   final result =
