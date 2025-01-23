@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
@@ -1195,7 +1196,7 @@ base class CallbackParams extends Struct {
   external int handle;
 }
 
-CallbackResult askarStoreProvision(
+Future<CallbackResult> askarStoreProvision(
   String specUri,
   String keyMethod,
   String passKey,
@@ -1207,7 +1208,28 @@ CallbackResult askarStoreProvision(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cbId = getNextCallbackId();
+  final cbId = 123;
+
+  late final NativeCallable<ProvisionCallback> nativeCallable;
+
+  final completer = Completer<CallbackResult>();
+
+  void cleanup() {
+    calloc.free(specUriPointer);
+    calloc.free(keyMethodPointer);
+    calloc.free(passKeyPointer);
+    calloc.free(profilePointer);
+    nativeCallable.close();
+  }
+
+  void onProvisionCallback(int callbackId, int errorCode, int handle) {
+    completer.complete(CallbackResult(intToErrorCode(errorCode), handle, true));
+    cleanup();
+  }
+
+  nativeCallable = NativeCallable<ProvisionCallback>.listener(onProvisionCallback);
+
+  final callbackPointer = nativeCallable.nativeFunction;
 
   final result = nativeAskarStoreProvision(
     specUriPointer,
@@ -1215,7 +1237,7 @@ CallbackResult askarStoreProvision(
     passKeyPointer,
     profilePointer,
     recreate,
-    nativeCbWithHandle,
+    callbackPointer,
     cbId,
   );
 
@@ -1223,17 +1245,11 @@ CallbackResult askarStoreProvision(
 
   if (initialErrorCode != ErrorCode.Success) {
     print('falhou de inicio');
-    return CallbackResult(initialErrorCode, -1, false);
+    completer.complete(CallbackResult(initialErrorCode, -1, false));
+    cleanup();
   }
 
-  sleep(Duration(seconds: 2));
-
-  calloc.free(specUriPointer);
-  calloc.free(keyMethodPointer);
-  calloc.free(passKeyPointer);
-  calloc.free(profilePointer);
-
-  return getCallbackParams(cbId);
+  return completer.future;
 }
 
 ErrorCode askarStoreRekey(

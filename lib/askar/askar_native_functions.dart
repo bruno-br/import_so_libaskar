@@ -1343,13 +1343,15 @@ final int Function(
     .lookup<NativeFunction<AskarStoreOpenNative>>('askar_store_open')
     .asFunction();
 
+typedef ProvisionCallback = Void Function(Int32 a, Int32 b, StoreHandle c);
+
 typedef AskarStoreProvisionNative = Int32 Function(
   Pointer<Utf8> spec_uri,
   Pointer<Utf8> key_method,
   Pointer<Utf8> pass_key,
   Pointer<Utf8> profile,
   Int8 recreate,
-  Pointer<NativeFunction<Void Function(Int32, Int32, StoreHandle)>> cb,
+  Pointer<NativeFunction<ProvisionCallback>> cb,
   CallbackId cb_id,
 );
 
@@ -1359,7 +1361,7 @@ final int Function(
   Pointer<Utf8> pass_key,
   Pointer<Utf8> profile,
   int recreate,
-  Pointer<NativeFunction<Void Function(Int32, Int32, StoreHandle)>> cb,
+  Pointer<NativeFunction<ProvisionCallback>> cb,
   int cb_id,
 ) nativeAskarStoreProvision = nativeLib
     .lookup<NativeFunction<AskarStoreProvisionNative>>('askar_store_provision')
