@@ -1102,6 +1102,8 @@ typedef AskarSessionUpdateCallback = Void Function(
   Int32 err,
 );
 
+typedef SessionStartCallback = Void Function(CallbackId, Int32, SessionHandle);
+
 typedef AskarSessionStartNative = Int32 Function(
   StoreHandle handle,
   Pointer<Utf8> profile,

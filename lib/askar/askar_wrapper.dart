@@ -940,24 +940,46 @@ ErrorCode askarSessionRemoveKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarSessionStart(int handle, String profile, int asTransaction) {
+Future<CallbackResult> askarSessionStart(int handle, String profile, int asTransaction) {
   final profilePointer = profile.toNativeUtf8();
 
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32, StoreHandle)>>('cb_with_handle');
-  final cbId = -1;
+  late final NativeCallable<SessionStartCallback> nativeCallable;
+
+  final completer = Completer<CallbackResult>();
+
+  void cleanup() {
+    calloc.free(profilePointer);
+    nativeCallable.close();
+  }
+
+  void onProvisionCallback(int callbackId, int errorCode, int handle) {
+    completer.complete(CallbackResult(intToErrorCode(errorCode), handle, true));
+    cleanup();
+  }
+
+  nativeCallable = NativeCallable<SessionStartCallback>.listener(onProvisionCallback);
+
+  final callbackPointer = nativeCallable.nativeFunction;
+
+  final cbId = 1;
 
   final result = nativeAskarSessionStart(
     handle,
     profilePointer,
     asTransaction,
-    cb,
+    callbackPointer,
     cbId,
   );
 
-  calloc.free(profilePointer);
+  final initialErrorCode = intToErrorCode(result);
 
-  return intToErrorCode(result);
+  if (initialErrorCode != ErrorCode.Success) {
+    print('falhou de inicio');
+    completer.complete(CallbackResult(initialErrorCode, -1, false));
+    cleanup();
+  }
+
+  return completer.future;
 }
 
 CallbackResult askarSessionUpdate(

@@ -23,7 +23,7 @@ void main() {
       await tester.runAsync(() async {
         final storeProvisionResult = await storeProvisionTest();
         expect(storeProvisionResult.errorCode, equals(ErrorCode.Success));
-        expect(storeProvisionResult.finished, true);
+        expect(storeProvisionResult.finished, equals(true));
 
         // Abre a carteira
         // final storeOpenResult = storeOpenTest();
@@ -31,7 +31,9 @@ void main() {
         // expect(storeOpenResult.finished, true);
 
         // Inicia uma sessão
-        // expect(sessionStartTest(), equals(ErrorCode.Success));
+        final sessionStartResult = await sessionStartTest(storeProvisionResult.handle);
+        expect(sessionStartResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionStartResult.finished, equals(true));
 
         // Insere key
         // final sessionInsertKeyResult = sessionInsertKeyTest(storeOpenResult.handle);
@@ -57,7 +59,8 @@ Future<CallbackResult> storeProvisionTest() async {
   final String profile = 'rekey';
   final int recreate = 1; // 1 para recriar, 0 para manter
 
-  final result = await askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
+  final result =
+      await askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
 
   print('Store Provision Result: (${result.errorCode}, Handle: ${result.handle})\n');
 
@@ -77,14 +80,13 @@ CallbackResult storeOpenTest() {
   return result;
 }
 
-ErrorCode sessionStartTest() {
-  int handle = 1;
+Future<CallbackResult> sessionStartTest(int handle) async {
   String profile = 'rekey';
   int asTransaction = 1;
 
-  final result = askarSessionStart(handle, profile, asTransaction);
+  final result = await askarSessionStart(handle, profile, asTransaction);
 
-  print('Session Start Result: ${result}\n');
+  print('Session Start Result: (${result.errorCode}, Handle: ${result.handle})\n');
 
   return result;
 }
@@ -107,7 +109,7 @@ CallbackResult sessionInsertKeyTest(int handle) {
   return result;
 }
 
-CallbackResult sessionUpdateTest(int handle) {
+Future<CallbackResult> sessionUpdateTest(int handle) async {
   int operation = 0;
   String category = 'category-one';
   String name = 'testEntry';
