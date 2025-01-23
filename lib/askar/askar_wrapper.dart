@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+
 import 'package:ffi/ffi.dart';
+import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
-import 'package:import_so_libaskar/askar/callback_native_functions.dart';
-import 'package:import_so_libaskar/askar/callback_wrapper.dart';
+
 import 'askar_native_functions.dart';
 
 String askarVersion() {
@@ -859,15 +860,19 @@ ErrorCode askarSessionFetchKey(
   return intToErrorCode(result);
 }
 
-CallbackResult askarSessionInsertKey(int handle, LocalKeyHandle keyHandle, String name,
-    String metadata, Map<String, String> tags, int expiryMs) {
+Future<CallbackResult> askarSessionInsertKey(int handle, LocalKeyHandle keyHandle,
+    String name, String metadata, Map<String, String> tags, int expiryMs) {
   final namePointer = name.toNativeUtf8();
   final metadataPointer = metadata.toNativeUtf8();
+  final tagsJsonPointer = jsonEncode(tags).toNativeUtf8();
 
-  final tagsJsonString = jsonEncode(tags);
-  final tagsJsonPointer = tagsJsonString.toNativeUtf8();
+  void cleanup() {
+    calloc.free(namePointer);
+    calloc.free(metadataPointer);
+    calloc.free(tagsJsonPointer);
+  }
 
-  final cbId = getNextCallbackId();
+  final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarSessionInsertKey(
     handle,
@@ -876,24 +881,11 @@ CallbackResult askarSessionInsertKey(int handle, LocalKeyHandle keyHandle, Strin
     metadataPointer,
     tagsJsonPointer,
     expiryMs,
-    nativeCbWithoutHandle,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  final initialErrorCode = intToErrorCode(result);
-
-  if (initialErrorCode != ErrorCode.Success) {
-    print('falhou de inicio');
-    return CallbackResult(initialErrorCode, -1, false);
-  }
-
-  sleep(Duration(seconds: 2));
-
-  calloc.free(namePointer);
-  calloc.free(metadataPointer);
-  calloc.free(tagsJsonPointer);
-
-  return getCallbackParams(cbId);
+  return callback.handleResult(result);
 }
 
 ErrorCode askarSessionRemoveAll(
@@ -943,46 +935,24 @@ ErrorCode askarSessionRemoveKey(
 Future<CallbackResult> askarSessionStart(int handle, String profile, int asTransaction) {
   final profilePointer = profile.toNativeUtf8();
 
-  late final NativeCallable<SessionStartCallback> nativeCallable;
-
-  final completer = Completer<CallbackResult>();
-
   void cleanup() {
     calloc.free(profilePointer);
-    nativeCallable.close();
   }
 
-  void onProvisionCallback(int callbackId, int errorCode, int handle) {
-    completer.complete(CallbackResult(intToErrorCode(errorCode), handle, true));
-    cleanup();
-  }
-
-  nativeCallable = NativeCallable<SessionStartCallback>.listener(onProvisionCallback);
-
-  final callbackPointer = nativeCallable.nativeFunction;
-
-  final cbId = 1;
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarSessionStart(
     handle,
     profilePointer,
     asTransaction,
-    callbackPointer,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  final initialErrorCode = intToErrorCode(result);
-
-  if (initialErrorCode != ErrorCode.Success) {
-    print('falhou de inicio');
-    completer.complete(CallbackResult(initialErrorCode, -1, false));
-    cleanup();
-  }
-
-  return completer.future;
+  return callback.handleResult(result);
 }
 
-CallbackResult askarSessionUpdate(
+Future<CallbackResult> askarSessionUpdate(
   int handle,
   int operation,
   String category,
@@ -994,10 +964,17 @@ CallbackResult askarSessionUpdate(
   final categoryPointer = category.toNativeUtf8();
   final namePointer = name.toNativeUtf8();
   final tagsPointer = tags.toNativeUtf8();
-
   final valueByteBuffer = stringToByteBuffer(value);
 
-  final cbId = getNextCallbackId();
+  void cleanup() {
+    calloc.free(categoryPointer);
+    calloc.free(namePointer);
+    calloc.free(valueByteBuffer.ref.data);
+    calloc.free(valueByteBuffer);
+    calloc.free(tagsPointer);
+  }
+
+  final callback = newCallbackWithoutHandle(cleanup);
 
   final result = nativeAskarSessionUpdate(
     handle,
@@ -1007,26 +984,11 @@ CallbackResult askarSessionUpdate(
     valueByteBuffer,
     tagsPointer,
     expiryMs,
-    nativeCbWithoutHandle,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  final initialErrorCode = intToErrorCode(result);
-
-  if (initialErrorCode != ErrorCode.Success) {
-    print('falhou de inicio');
-    return CallbackResult(initialErrorCode, -1, false);
-  }
-
-  sleep(Duration(seconds: 2));
-
-  calloc.free(categoryPointer);
-  calloc.free(namePointer);
-  calloc.free(valueByteBuffer.ref.data);
-  calloc.free(valueByteBuffer);
-  calloc.free(tagsPointer);
-
-  return getCallbackParams(cbId);
+  return callback.handleResult(result);
 }
 
 Pointer<ByteBuffer> stringToByteBuffer(String value) {
@@ -1074,13 +1036,13 @@ ErrorCode askarSessionUpdateKey(
   return intToErrorCode(result);
 }
 
-ErrorCode askarStoreClose(int handle) {
-  final cb = nativeLibCallbacks
-      .lookup<NativeFunction<Void Function(Int64, Int32)>>('cb_without_handle');
-  final cbId = -1;
+Future<CallbackResult> askarStoreClose(int handle) {
+  final callback = newCallbackWithoutHandle(() => {});
 
-  final result = nativeAskarStoreClose(handle, cb, cbId);
-  return intToErrorCode(result);
+  final result =
+      nativeAskarStoreClose(handle, callback.nativeCallable.nativeFunction, callback.id);
+
+  return callback.handleResult(result);
 }
 
 ErrorCode askarStoreCopy(
@@ -1168,7 +1130,7 @@ ErrorCode askarStoreListProfiles(
   return intToErrorCode(result);
 }
 
-CallbackResult askarStoreOpen(
+Future<CallbackResult> askarStoreOpen(
   String specUri,
   String keyMethod,
   String passKey,
@@ -1179,32 +1141,25 @@ CallbackResult askarStoreOpen(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cbId = getNextCallbackId();
+  void cleanup() {
+    calloc.free(specUriPointer);
+    calloc.free(keyMethodPointer);
+    calloc.free(passKeyPointer);
+    calloc.free(profilePointer);
+  }
+
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarStoreOpen(
     specUriPointer,
     keyMethodPointer,
     passKeyPointer,
     profilePointer,
-    nativeCbWithHandle,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  final initialErrorCode = intToErrorCode(result);
-
-  if (initialErrorCode != ErrorCode.Success) {
-    print('falhou de inicio');
-    return CallbackResult(initialErrorCode, -1, false);
-  }
-
-  sleep(Duration(seconds: 2));
-
-  calloc.free(specUriPointer);
-  calloc.free(keyMethodPointer);
-  calloc.free(passKeyPointer);
-  calloc.free(profilePointer);
-
-  return getCallbackParams(cbId);
+  return callback.handleResult(result);
 }
 
 base class CallbackParams extends Struct {
@@ -1230,28 +1185,14 @@ Future<CallbackResult> askarStoreProvision(
   final passKeyPointer = passKey.toNativeUtf8();
   final profilePointer = profile.toNativeUtf8();
 
-  final cbId = 123;
-
-  late final NativeCallable<ProvisionCallback> nativeCallable;
-
-  final completer = Completer<CallbackResult>();
-
   void cleanup() {
     calloc.free(specUriPointer);
     calloc.free(keyMethodPointer);
     calloc.free(passKeyPointer);
     calloc.free(profilePointer);
-    nativeCallable.close();
   }
 
-  void onProvisionCallback(int callbackId, int errorCode, int handle) {
-    completer.complete(CallbackResult(intToErrorCode(errorCode), handle, true));
-    cleanup();
-  }
-
-  nativeCallable = NativeCallable<ProvisionCallback>.listener(onProvisionCallback);
-
-  final callbackPointer = nativeCallable.nativeFunction;
+  final callback = newCallbackWithHandle(cleanup);
 
   final result = nativeAskarStoreProvision(
     specUriPointer,
@@ -1259,19 +1200,11 @@ Future<CallbackResult> askarStoreProvision(
     passKeyPointer,
     profilePointer,
     recreate,
-    callbackPointer,
-    cbId,
+    callback.nativeCallable.nativeFunction,
+    callback.id,
   );
 
-  final initialErrorCode = intToErrorCode(result);
-
-  if (initialErrorCode != ErrorCode.Success) {
-    print('falhou de inicio');
-    completer.complete(CallbackResult(initialErrorCode, -1, false));
-    cleanup();
-  }
-
-  return completer.future;
+  return callback.handleResult(result);
 }
 
 ErrorCode askarStoreRekey(

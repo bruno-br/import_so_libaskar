@@ -1,11 +1,11 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:import_so_libaskar/askar/askar_callbacks.dart';
 import 'package:import_so_libaskar/askar/askar_error_code.dart';
 import 'package:import_so_libaskar/askar/askar_native_functions.dart';
 import 'package:import_so_libaskar/askar/askar_wrapper.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:import_so_libaskar/askar/callback_wrapper.dart';
 import 'package:import_so_libaskar/main.dart';
 
 void main() {
@@ -26,9 +26,9 @@ void main() {
         expect(storeProvisionResult.finished, equals(true));
 
         // Abre a carteira
-        // final storeOpenResult = storeOpenTest();
+        // final storeOpenResult = await storeOpenTest();
         // expect(storeOpenResult.errorCode, equals(ErrorCode.Success));
-        // expect(storeOpenResult.finished, true);
+        // expect(storeOpenResult.finished, equals(true));
 
         // Inicia uma sessão
         final sessionStartResult = await sessionStartTest(storeProvisionResult.handle);
@@ -36,17 +36,19 @@ void main() {
         expect(sessionStartResult.finished, equals(true));
 
         // Insere key
-        // final sessionInsertKeyResult = sessionInsertKeyTest(storeOpenResult.handle);
+        // final sessionInsertKeyResult = await sessionInsertKeyTest(sessionStartResult.handle);
         // expect(sessionInsertKeyResult.errorCode, equals(ErrorCode.Input));
-        // expect(sessionInsertKeyResult.finished, true);
+        // expect(sessionInsertKeyResult.finished, equals(true));
 
         // Atualiza sessao
-        // final sessionUpdateResult = sessionUpdateTest(storeOpenResult.handle);
-        // expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
-        // expect(sessionUpdateResult.finished, true);
+        final sessionUpdateResult = await sessionUpdateTest(sessionStartResult.handle);
+        expect(sessionUpdateResult.errorCode, equals(ErrorCode.Success));
+        expect(sessionUpdateResult.finished, equals(true));
 
         // Fecha a carteira
-        // expect(storeCloseTest(), equals(ErrorCode.Success));
+        final storeCloseResult = await storeCloseTest(sessionUpdateResult.handle);
+        expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(storeCloseResult.finished, equals(true));
       });
     });
   });
@@ -62,20 +64,20 @@ Future<CallbackResult> storeProvisionTest() async {
   final result =
       await askarStoreProvision(specUri, keyMethod, passKey, profile, recreate);
 
-  print('Store Provision Result: (${result.errorCode}, Handle: ${result.handle})\n');
+  printResult('StoreProvision', result);
 
   return result;
 }
 
-CallbackResult storeOpenTest() {
+Future<CallbackResult> storeOpenTest() async {
   final String specUri = 'sqlite://storage.db';
   final String keyMethod = 'kdf:argon2i:mod';
   final String passKey = 'mySecretKey';
   final String profile = 'rekey';
 
-  final result = askarStoreOpen(specUri, keyMethod, passKey, profile);
+  final result = await askarStoreOpen(specUri, keyMethod, passKey, profile);
 
-  print('Store Open Result: (${result.errorCode}, Handle: ${result.handle})\n');
+  printResult('StoreOpen', result);
 
   return result;
 }
@@ -86,23 +88,22 @@ Future<CallbackResult> sessionStartTest(int handle) async {
 
   final result = await askarSessionStart(handle, profile, asTransaction);
 
-  print('Session Start Result: (${result.errorCode}, Handle: ${result.handle})\n');
+  printResult('SessionStart', result);
 
   return result;
 }
 
-CallbackResult sessionInsertKeyTest(int handle) {
+Future<CallbackResult> sessionInsertKeyTest(int handle) async {
   Pointer<ArcHandleLocalKey> keyHandlePointer = calloc<ArcHandleLocalKey>();
   String name = 'testkey"';
   String metadata = 'meta';
-  String reference = 'None';
   Map<String, String> tags = {'a': 'b'};
   int expiryMs = 2000;
 
-  final result =
-      askarSessionInsertKey(handle, keyHandlePointer, name, metadata, tags, expiryMs);
+  final result = await askarSessionInsertKey(
+      handle, keyHandlePointer, name, metadata, tags, expiryMs);
 
-  print('Session Insert Key Result: (${result.errorCode}, Handle: ${result.handle})\n');
+  printResult('SessionInsertKey', result);
 
   calloc.free(keyHandlePointer);
 
@@ -118,19 +119,22 @@ Future<CallbackResult> sessionUpdateTest(int handle) async {
   int expiryMs = 2000;
 
   final result =
-      askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
+      await askarSessionUpdate(handle, operation, category, name, value, tags, expiryMs);
 
-  print('Session Update Result: (${result.errorCode}, Handle: ${result.handle})\n');
+  printResult('SessionUpdate', result);
 
   return result;
 }
 
-ErrorCode storeCloseTest() {
-  final int handle = 1; // 0 = não remove os dados do store
+Future<CallbackResult> storeCloseTest(int handle) async {
+  final result = await askarStoreClose(handle);
 
-  final result = askarStoreClose(handle);
-
-  print('Store Close Result: ${result}\n');
+  printResult('StoreClose', result);
 
   return result;
+}
+
+void printResult(String test, CallbackResult result) {
+  print(
+      '$test Result: (${result.errorCode}, Handle: ${result.handle}, Finished: ${result.finished})\n');
 }

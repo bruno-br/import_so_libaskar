@@ -1102,8 +1102,6 @@ typedef AskarSessionUpdateCallback = Void Function(
   Int32 err,
 );
 
-typedef SessionStartCallback = Void Function(CallbackId, Int32, SessionHandle);
-
 typedef AskarSessionStartNative = Int32 Function(
   StoreHandle handle,
   Pointer<Utf8> profile,
@@ -1330,7 +1328,7 @@ typedef AskarStoreOpenNative = Int32 Function(
   Pointer<Utf8> key_method,
   Pointer<Utf8> pass_key,
   Pointer<Utf8> profile,
-  Pointer<NativeFunction<Void Function(Int32, Int32, StoreHandle)>> cb,
+  Pointer<NativeFunction<Void Function(Int64, Int32, StoreHandle)>> cb,
   Int64 cb_id,
 );
 
@@ -1339,13 +1337,13 @@ final int Function(
   Pointer<Utf8> key_method,
   Pointer<Utf8> pass_key,
   Pointer<Utf8> profile,
-  Pointer<NativeFunction<Void Function(Int32, Int32, StoreHandle)>> cb,
+  Pointer<NativeFunction<Void Function(Int64, Int32, StoreHandle)>> cb,
   int cb_id,
 ) nativeAskarStoreOpen = nativeLib
     .lookup<NativeFunction<AskarStoreOpenNative>>('askar_store_open')
     .asFunction();
 
-typedef ProvisionCallback = Void Function(Int32 a, Int32 b, StoreHandle c);
+typedef ProvisionCallback = Void Function(CallbackId a, Int32 b, StoreHandle c);
 
 typedef AskarStoreProvisionNative = Int32 Function(
   Pointer<Utf8> spec_uri,
