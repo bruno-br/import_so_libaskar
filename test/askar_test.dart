@@ -46,9 +46,9 @@ void main() {
         expect(sessionUpdateResult.finished, equals(true));
 
         // Fecha a carteira
-        // final storeCloseResult = await storeCloseTest(sessionUpdateResult.handle);
-        // expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
-        // expect(storeCloseResult.finished, equals(true));
+        final storeCloseResult = await storeCloseTest(storeProvisionResult.handle);
+        expect(storeCloseResult.errorCode, equals(ErrorCode.Success));
+        expect(storeCloseResult.finished, equals(true));
       });
     });
   });
